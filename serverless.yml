@@ -1,0 +1,47 @@
+service: serverless-ui-template
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  profile: serverless-template
+  region: us-east-1
+  deploymentBucket:
+    name: deployments.bryansuralta
+    blockPublicAccess: true
+
+plugins:
+  - serverless-s3-sync
+
+custom:
+  bucketName: bryansuralta.com
+  originAccessIdentity: E28QX0XFRF4HI2
+  s3Sync:
+    - bucketName: ${self:custom.bucketName}
+      localDir: build
+
+resources:
+  Resources:
+    s3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucketName}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+
+    s3AccessPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: s3Bucket
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal:
+                AWS: "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${self:custom.originAccessIdentity}"
+              Action:
+                - s3:GetObject
+              Resource: arn:aws:s3:::${self:custom.bucketName}/*

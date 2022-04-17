@@ -1,25 +1,33 @@
-import logo from "./logo.svg";
-import "./App.css";
+import { FunctionComponent } from "react";
+import { BrowserRouter } from "react-router-dom";
+import { Route, Routes } from "react-router";
 
-function App() {
+import { StoreProvider } from "./context/store";
+import { Header } from "./header";
+import { Menu } from "./menu";
+import { Home } from "./home";
+import { About } from "./about";
+import { NotFound } from "./not-found";
+import "./app.scss";
+
+export const App: FunctionComponent = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div id="app">
+      <StoreProvider>
+        <BrowserRouter>
+          <Header />
+          <div id="container">
+            <Menu />
+            <div id="content">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </div>
+        </BrowserRouter>
+      </StoreProvider>
     </div>
   );
-}
-
-export default App;
+};

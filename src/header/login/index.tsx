@@ -1,4 +1,4 @@
-import { FunctionComponent, useContext, useEffect } from "react";
+import { FunctionComponent, useContext, useMemo } from "react";
 import { Amplify, Auth } from "aws-amplify";
 import { CognitoUser } from "@aws-amplify/auth";
 
@@ -26,18 +26,18 @@ Amplify.configure({
 });
 
 export const Login: FunctionComponent = () => {
-  const { user, signingIn, setStore } = useContext(StoreContext);
-  console.log("signingIn", signingIn);
+  const { user, signingIn, setStoreUser, setStoreSigningIn } =
+    useContext(StoreContext);
 
-  useEffect(() => {
+  useMemo(() => {
     Auth.currentAuthenticatedUser()
       .then((currentUser: CognitoUser) => {
-        setStore.user({ name: currentUser.getUsername() });
+        setStoreUser({ name: currentUser.getUsername() });
       })
       .catch(() => {
         console.log("Not signed in");
       });
-  }, [setStore]);
+  }, [setStoreUser]);
 
   if (user?.name) {
     return (
@@ -45,7 +45,7 @@ export const Login: FunctionComponent = () => {
         Welcome {user.name}
         <button
           onClick={() => {
-            setStore.signingIn(false);
+            setStoreSigningIn(false);
             Auth.signOut();
           }}
         >

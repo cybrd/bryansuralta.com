@@ -5,14 +5,14 @@ import { CognitoHostedUIIdentityProvider } from "@aws-amplify/auth";
 import { StoreContext } from "../../../context/store";
 
 export const SignIn: FunctionComponent = () => {
-  const { setStore } = useContext(StoreContext);
+  const { setStoreSigningIn } = useContext(StoreContext);
 
   return (
     <div id="sign-in">
       Sign in with
       <button
         onClick={() => {
-          setStore.signingIn(true);
+          setStoreSigningIn(true);
           Auth.federatedSignIn({
             provider: CognitoHostedUIIdentityProvider.Facebook,
           });
@@ -22,7 +22,7 @@ export const SignIn: FunctionComponent = () => {
       </button>
       <button
         onClick={() => {
-          setStore.signingIn(true);
+          setStoreSigningIn(true);
           Auth.federatedSignIn({
             provider: CognitoHostedUIIdentityProvider.Google,
           });

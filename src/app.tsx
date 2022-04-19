@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, StrictMode } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Route, Routes } from "react-router";
 
@@ -12,22 +12,24 @@ import "./app.scss";
 
 export const App: FunctionComponent = () => {
   return (
-    <div id="app">
-      <StoreProvider>
-        <BrowserRouter>
-          <Header />
-          <div id="container">
-            <Menu />
-            <div id="content">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+    <StrictMode>
+      <div id="app">
+        <StoreProvider>
+          <BrowserRouter>
+            <Header />
+            <div id="container">
+              <Menu />
+              <div id="content">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
             </div>
-          </div>
-        </BrowserRouter>
-      </StoreProvider>
-    </div>
+          </BrowserRouter>
+        </StoreProvider>
+      </div>
+    </StrictMode>
   );
 };

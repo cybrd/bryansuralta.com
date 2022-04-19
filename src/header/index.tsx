@@ -7,10 +7,12 @@ import "./index.scss";
 
 export const Header: FunctionComponent = () => {
   return (
-    <div id="header">
-      <Logo />
-      <Banner />
-      <Login />
+    <div id="header-wrapper">
+      <div id="header">
+        <Logo />
+        <Banner />
+        <Login />
+      </div>
     </div>
   );
 };

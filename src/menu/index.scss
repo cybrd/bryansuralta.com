@@ -1,3 +1,8 @@
-#menu {
+#menu-wrapper {
   width: 164px;
+}
+
+#menu {
+  position: sticky;
+  top: 60px;
 }

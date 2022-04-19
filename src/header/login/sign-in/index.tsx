@@ -4,32 +4,42 @@ import { CognitoHostedUIIdentityProvider } from "@aws-amplify/auth";
 
 import { StoreContext } from "../../../context/store";
 
+import facebook from "./facebook.png";
+import google from "./google.png";
+import "./index.scss";
+
 export const SignIn: FunctionComponent = () => {
-  const { setStoreSigningIn } = useContext(StoreContext);
+  const { login, setStoreLogin } = useContext(StoreContext);
 
   return (
     <div id="sign-in">
       Sign in with
-      <button
+      <img
+        src={facebook}
+        alt="Login with Facebook"
         onClick={() => {
-          setStoreSigningIn(true);
+          setStoreLogin({
+            ...login,
+            signingIn: new Date().getTime(),
+          });
           Auth.federatedSignIn({
             provider: CognitoHostedUIIdentityProvider.Facebook,
           });
         }}
-      >
-        Facebook
-      </button>
-      <button
+      />
+      <img
+        src={google}
+        alt="Login with Google"
         onClick={() => {
-          setStoreSigningIn(true);
+          setStoreLogin({
+            ...login,
+            signingIn: new Date().getTime(),
+          });
           Auth.federatedSignIn({
             provider: CognitoHostedUIIdentityProvider.Google,
           });
         }}
-      >
-        Google
-      </button>
+      />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { FunctionComponent, useContext, useMemo } from "react";
+import { FunctionComponent, useContext, useEffect } from "react";
 import { Amplify, Auth } from "aws-amplify";
 import { CognitoUser } from "@aws-amplify/auth";
 
@@ -26,18 +26,24 @@ Amplify.configure({
 });
 
 export const Login: FunctionComponent = () => {
-  const { user, signingIn, setStoreUser, setStoreSigningIn } =
-    useContext(StoreContext);
+  const { user, setStoreUser, login, setStoreLogin } = useContext(StoreContext);
 
-  useMemo(() => {
+  useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((currentUser: CognitoUser) => {
-        setStoreUser({ name: currentUser.getUsername() });
+        setStoreUser({
+          ...user,
+          name: currentUser.getUsername(),
+        });
       })
       .catch(() => {
+        setStoreLogin({
+          ...login,
+          signingOut: 0,
+        });
         console.log("Not signed in");
       });
-  }, [setStoreUser]);
+  }, []);
 
   if (user?.name) {
     return (
@@ -45,16 +51,21 @@ export const Login: FunctionComponent = () => {
         Welcome {user.name}
         <button
           onClick={() => {
-            setStoreSigningIn(false);
-            Auth.signOut();
+            setStoreLogin({
+              signingIn: 0,
+              signingOut: new Date().getTime(),
+            });
+            Auth.signOut().catch((err) => console.error(err));
           }}
         >
           Sign Out
         </button>
       </div>
     );
-  } else if (signingIn) {
+  } else if (new Date().getTime() - login?.signingIn < 3000) {
     return <div id="login">Signing in...</div>;
+  } else if (new Date().getTime() - login?.signingOut < 3000) {
+    return <div id="login">Signing out...</div>;
   } else {
     return (
       <div id="login">

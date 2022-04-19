@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import { User } from "../models/user";
+import { Login } from "../models/login";
 
 type StoreSetResult<T> = (value: T) => void;
 type StoreSet<T> = (
@@ -17,9 +18,9 @@ type StoreSet<T> = (
 
 type StoreState = {
   user: User;
-  signingIn: boolean;
   setStoreUser: StoreSetResult<User>;
-  setStoreSigningIn: StoreSetResult<boolean>;
+  login: Login;
+  setStoreLogin: StoreSetResult<Login>;
 };
 const initState = {} as StoreState;
 
@@ -39,14 +40,16 @@ const setStore: StoreSet<any> = (key, setter) => {
 export const StoreProvider: FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [user, setUser] = useState<User>({});
-  const [signingIn, setSigningIn] = useState<boolean>(getStore("signingIn"));
+  const [user, setUser] = useState<User>({
+    name: "",
+  });
+  const [login, setLogin] = useState<Login>(getStore("login"));
 
   const store: StoreState = {
     user,
-    signingIn,
     setStoreUser: setStore("user", setUser),
-    setStoreSigningIn: setStore("signingIn", setSigningIn),
+    login,
+    setStoreLogin: setStore("login", setLogin),
   };
 
   return (

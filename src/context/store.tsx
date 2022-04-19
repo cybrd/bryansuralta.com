@@ -9,18 +9,42 @@ import {
 
 import { User } from "../models/user";
 
-type InitState = {
-  user: [User | null, Dispatch<SetStateAction<User | null>>];
+type StoreState = {
+  user: User;
+  signingIn: boolean;
+  setStore: {
+    user: any;
+    signingIn: any;
+  };
 };
-const initState = {} as InitState;
+const initState = {} as StoreState;
 
 export const StoreContext = createContext(initState);
+
+const getStore = (key: string) => {
+  return JSON.parse(window.localStorage.getItem(key) as string);
+};
+
+const setStore = <T,>(key: string, setter: Dispatch<SetStateAction<T>>) => {
+  return (value: T) => {
+    setter(value);
+    return window.localStorage.setItem(key, JSON.stringify(value));
+  };
+};
 
 export const StoreProvider: FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
-  const store = {
-    user: useState(JSON.parse(window.localStorage.getItem("user") as string)),
+  const [user, setUser] = useState({});
+  const [signingIn, setSigningIn] = useState(getStore("signingIn"));
+
+  const store: StoreState = {
+    user,
+    signingIn,
+    setStore: {
+      user: setStore("user", setUser),
+      signingIn: setStore("signingIn", setSigningIn),
+    },
   };
 
   return (

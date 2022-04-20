@@ -1,9 +1,9 @@
 import {
   createContext,
   FunctionComponent,
-  Dispatch,
   ReactNode,
   useReducer,
+  Dispatch,
 } from "react";
 
 import { User } from "../models/user";
@@ -28,9 +28,7 @@ export const StoreProvider: FunctionComponent<{
       window.localStorage.setItem("user", JSON.stringify(updated));
       return updated;
     },
-    {
-      name: "",
-    }
+    { name: "" }
   );
 
   const [login, setLogin] = useReducer((prev: Login, current: Login) => {

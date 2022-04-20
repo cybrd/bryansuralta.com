@@ -1,5 +1,9 @@
 import { FunctionComponent } from "react";
 
 export const About: FunctionComponent = () => {
-  return <div>About</div>;
+  return (
+    <div>
+      <p>About</p>
+    </div>
+  );
 };

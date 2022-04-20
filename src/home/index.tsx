@@ -1,8 +1,10 @@
 import { FunctionComponent } from "react";
 
+import "./index.scss";
+
 export const Home: FunctionComponent = () => {
   return (
-    <div>
+    <div id="home">
       <div id="lipsum">
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum

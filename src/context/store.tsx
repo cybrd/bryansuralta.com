@@ -1,55 +1,49 @@
 import {
   createContext,
-  useState,
   FunctionComponent,
   Dispatch,
-  SetStateAction,
   ReactNode,
+  useReducer,
 } from "react";
 
 import { User } from "../models/user";
 import { Login } from "../models/login";
 
-type StoreSetResult<T> = (value: T) => void;
-type StoreSet<T> = (
-  key: string,
-  setter: Dispatch<SetStateAction<T>>
-) => StoreSetResult<T>;
-
 type StoreState = {
   user: User;
-  setStoreUser: StoreSetResult<User>;
+  setUser: Dispatch<User>;
   login: Login;
-  setStoreLogin: StoreSetResult<Login>;
+  setLogin: Dispatch<Login>;
 };
 const initState = {} as StoreState;
 
 export const StoreContext = createContext(initState);
 
-const getStore = (key: string) => {
-  return JSON.parse(window.localStorage.getItem(key) as string);
-};
-
-const setStore: StoreSet<any> = (key, setter) => {
-  return (value) => {
-    setter(value);
-    return window.localStorage.setItem(key, JSON.stringify(value));
-  };
-};
-
 export const StoreProvider: FunctionComponent<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [user, setUser] = useState<User>({
-    name: "",
-  });
-  const [login, setLogin] = useState<Login>(getStore("login"));
+  const [user, setUser] = useReducer(
+    (prev: User, current: User) => {
+      const updated = { ...prev, ...current };
+      window.localStorage.setItem("user", JSON.stringify(updated));
+      return updated;
+    },
+    {
+      name: "",
+    }
+  );
+
+  const [login, setLogin] = useReducer((prev: Login, current: Login) => {
+    const updated = { ...prev, ...current };
+    window.localStorage.setItem("login", JSON.stringify(updated));
+    return updated;
+  }, JSON.parse(window.localStorage.getItem("login") as string));
 
   const store: StoreState = {
     user,
-    setStoreUser: setStore("user", setUser),
+    setUser,
     login,
-    setStoreLogin: setStore("login", setLogin),
+    setLogin,
   };
 
   return (

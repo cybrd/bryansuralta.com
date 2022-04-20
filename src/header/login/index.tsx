@@ -1,10 +1,18 @@
-import { FunctionComponent, useContext, useEffect } from "react";
+import { FunctionComponent, useContext, useEffect, useState } from "react";
 import { Amplify, Auth } from "aws-amplify";
 import { CognitoUser } from "@aws-amplify/auth";
 
 import { StoreContext } from "../../context/store";
 import { SignIn } from "./sign-in";
 import "./index.scss";
+
+const isLocalhost = Boolean(
+  window.location.hostname === "localhost" ||
+    window.location.hostname === "[::1]" ||
+    window.location.hostname.match(
+      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+    )
+);
 
 Amplify.configure({
   aws_cognito_region: "us-east-1",
@@ -19,53 +27,48 @@ Amplify.configure({
       "openid",
       "aws.cognito.signin.user.admin",
     ],
-    redirectSignIn: "http://localhost:3000",
-    redirectSignOut: "http://localhost:3000",
+    redirectSignIn: isLocalhost
+      ? "http://localhost:3000"
+      : "https://bryansuralta.com",
+    redirectSignOut: isLocalhost
+      ? "http://localhost:3000"
+      : "https://bryansuralta.com",
     responseType: "token",
   },
 });
 
 export const Login: FunctionComponent = () => {
-  const { user, setStoreUser, login, setStoreLogin } = useContext(StoreContext);
+  const { user, setUser } = useContext(StoreContext);
+  const [signOut, setSignOut] = useState(false);
 
   useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((currentUser: CognitoUser) => {
-        setStoreUser({
-          ...user,
+        setUser({
           name: currentUser.getUsername(),
         });
       })
       .catch(() => {
-        setStoreLogin({
-          ...login,
-          signingOut: 0,
-        });
         console.log("Not signed in");
       });
-  }, []);
+  }, [setUser]);
 
-  if (user?.name) {
+  if (signOut) {
+    return <div id="login">Signing out...</div>;
+  } else if (user?.name) {
     return (
       <div id="login">
         Welcome {user.name}
         <button
           onClick={() => {
-            setStoreLogin({
-              signingIn: 0,
-              signingOut: new Date().getTime(),
-            });
-            Auth.signOut().catch((err) => console.error(err));
+            setSignOut(true);
+            Auth.signOut();
           }}
         >
           Sign Out
         </button>
       </div>
     );
-  } else if (new Date().getTime() - login?.signingIn < 3000) {
-    return <div id="login">Signing in...</div>;
-  } else if (new Date().getTime() - login?.signingOut < 3000) {
-    return <div id="login">Signing out...</div>;
   } else {
     return (
       <div id="login">

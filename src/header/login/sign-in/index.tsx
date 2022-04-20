@@ -9,37 +9,39 @@ import google from "./google.png";
 import "./index.scss";
 
 export const SignIn: FunctionComponent = () => {
-  const { login, setStoreLogin } = useContext(StoreContext);
+  const { login, setLogin } = useContext(StoreContext);
 
-  return (
-    <div id="sign-in">
-      Sign in with
-      <img
-        src={facebook}
-        alt="Login with Facebook"
-        onClick={() => {
-          setStoreLogin({
-            ...login,
-            signingIn: new Date().getTime(),
-          });
-          Auth.federatedSignIn({
-            provider: CognitoHostedUIIdentityProvider.Facebook,
-          });
-        }}
-      />
-      <img
-        src={google}
-        alt="Login with Google"
-        onClick={() => {
-          setStoreLogin({
-            ...login,
-            signingIn: new Date().getTime(),
-          });
-          Auth.federatedSignIn({
-            provider: CognitoHostedUIIdentityProvider.Google,
-          });
-        }}
-      />
-    </div>
-  );
+  if (new Date().getTime() - login?.signingIn < 3000) {
+    return <div id="sign-in">Signing in...</div>;
+  } else {
+    return (
+      <div id="sign-in">
+        Sign in with
+        <img
+          src={facebook}
+          alt="Login with Facebook"
+          onClick={() => {
+            setLogin({
+              signingIn: new Date().getTime(),
+            });
+            Auth.federatedSignIn({
+              provider: CognitoHostedUIIdentityProvider.Facebook,
+            });
+          }}
+        />
+        <img
+          src={google}
+          alt="Login with Google"
+          onClick={() => {
+            setLogin({
+              signingIn: new Date().getTime(),
+            });
+            Auth.federatedSignIn({
+              provider: CognitoHostedUIIdentityProvider.Google,
+            });
+          }}
+        />
+      </div>
+    );
+  }
 };

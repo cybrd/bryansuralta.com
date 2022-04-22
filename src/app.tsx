@@ -8,6 +8,7 @@ import { Menu } from "./menu";
 import { Footer } from "./footer";
 import { Home } from "./home";
 import { About } from "./about";
+import { Draft } from "./draft";
 import { NotFound } from "./not-found";
 import "./app.scss";
 
@@ -23,6 +24,7 @@ export const App: FunctionComponent = () => {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/draft" element={<Draft />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>

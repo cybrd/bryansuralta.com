@@ -17,6 +17,9 @@ export const Menu: FunctionComponent = () => {
           <li>
             <Link to="/about">About</Link>
           </li>
+          <li>
+            <Link to="/draft">Draft</Link>
+          </li>
         </ul>
       </div>
     </div>
